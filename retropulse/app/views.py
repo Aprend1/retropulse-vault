@@ -100,7 +100,7 @@ def db_inspector(request):
             cantidad = int(request.POST.get('cantidad_productos'))
             precio = float(request.POST.get('precio_unitario'))
             descripcion = request.POST.get('descripcion')
-            imagen = request.FILES.get('imagen') # Captura del archivo físico
+            imagen = request.POST.get('imagen') 
 
             # Creación del registro en base de datos mediante ORM
             nuevo_producto = Producto.objects.create(

@@ -114,9 +114,6 @@ STATICFILES_DIRS = [
 ]
 
 
-# Configuración para subida de imágenes físicas (Pillow)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

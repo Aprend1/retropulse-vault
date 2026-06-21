@@ -79,7 +79,7 @@
         <h2 class="text-xl font-bold font-retro text-white flex items-center gap-2">
             <i class="fa-solid fa-circle-plus text-cyber-cyan"></i> Insertar Registro Directo en la Base de Datos
         </h2>
-        <form method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-300">
+        <form method="POST"  class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-300">
             {% csrf_token %}
             <div class="space-y-1">
                 <label class="text-xs font-retro">TIPO DE REGISTRO</label>
@@ -105,8 +105,8 @@
                 <input name="descripcion" type="text" required placeholder="Breve descripción técnica..." class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
             </div>
             <div class="space-y-1 md:col-span-3">
-                <label class="text-xs font-retro block">SUBIR IMAGEN DEL PRODUCTO (.JPG / .PNG)</label>
-                <input name="imagen" type="file" accept="image/*" class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
+                <label class="text-xs font-retro block">RUTA DE LA IMAGEN DEL PRODUCTO (.JPG / .PNG)</label>
+                <input name="imagen" type="text" required placeholder="Ej: /media/productos/leon.png" class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
             </div>
             <div class="md:col-span-3 flex justify-end">
                 <button type="submit" class="px-6 py-2 bg-cyber-cyan hover:bg-cyber-cyan/90 text-black font-retro font-black rounded tracking-widest transition">

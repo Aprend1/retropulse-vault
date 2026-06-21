@@ -131,9 +131,6 @@ def eliminar_producto(request, cod_producto):
         producto = get_object_or_404(Producto, cod_producto=cod_producto)
         nombre_producto = producto.nombre
         
-        # Eliminar archivo de imagen física si existe y no es la imagen por defecto
-        if producto.imagen and producto.imagen.name != 'productos/default.jpg':
-            producto.imagen.delete(save=False)
             
         # Borrado del registro en el ORM de Django
         producto.delete()

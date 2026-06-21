@@ -84,7 +84,7 @@
                 <div class="bg-cyber-card rounded-xl overflow-hidden border border-cyber-purple/30 hover:border-cyber-pink transition-all duration-300 flex flex-col group h-full">
                     <div class="relative overflow-hidden aspect-video bg-black flex items-center justify-center">
                         {% if producto.imagen %}
-                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="object-cover w-full h-full group-hover:scale-105 transition duration-500 opacity-90">
+                            <img src="{{ producto.imagen }}" alt="{{ producto.nombre }}" class="object-cover w-full h-full group-hover:scale-105 transition duration-500 opacity-90">
                         {% endif %}
                         <span class="absolute top-2 left-2 px-2 py-0.5 text-[10px] font-retro font-semibold rounded {% if producto.tipo == 1 %}border-cyber-pink text-cyber-pink{% else %}border-cyber-cyan text-cyber-cyan{% endif %} bg-cyber-dark/80 border uppercase tracking-wider">
                             {% if producto.tipo == 1 %}Coleccionable{% else %}Tecnología Retro{% endif %}

@@ -10,7 +10,12 @@ SECRET_KEY = 'django-insecure-xd1%vw8aol8yko2&d)z##350fujrp@st)-m-6n4_4*5!2x_+k=
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'retropulse-vault.vercel.app',
+    '.vercel.app',
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition

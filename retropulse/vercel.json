@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "buildCommand": "python manage.py migrate",
   "builds": [
     {
       "src": "retropulse/wsgi.py",

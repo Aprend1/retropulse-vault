@@ -108,13 +108,10 @@ def db_inspector(request):
                 nombre=nombre,
                 cantidad_productos=cantidad,
                 precio_unitario=precio,
-                descripcion=descripcion
+                descripcion=descripcion,
+                imagen=imagen
             )
             
-            # Guardado condicional del archivo de imagen
-            if imagen:
-                nuevo_producto.imagen = imagen
-                nuevo_producto.save()
                 
             messages.success(request, f"Producto '{nombre}' insertado en la base de datos con el código {nuevo_producto.cod_producto}.")
             return redirect('store:db_inspector')

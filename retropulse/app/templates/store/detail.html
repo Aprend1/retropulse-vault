@@ -11,7 +11,7 @@
         <div class="flex flex-col md:flex-row gap-8 p-6 md:p-10">
             <div class="md:w-1/2 aspect-video md:aspect-square bg-black rounded-xl overflow-hidden border border-cyber-purple/30">
                 {% if producto.imagen %}
-                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="object-cover w-full h-full">
+                    <img src="{{ producto.imagen }}" alt="{{ producto.nombre }}" class="object-cover w-full h-full">
                 {% endif %}
             </div>
 

@@ -1,0 +1,78 @@
+{% extends 'store/base.html' %}
+{% block title %}Acceso - RetroPulse Vault{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <div class="bg-cyber-card rounded-2xl border border-cyber-pink/30 overflow-hidden shadow-2xl">
+        <div class="flex border-b border-cyber-purple/40 text-center font-retro text-sm">
+            <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-4 font-black tracking-widest text-cyber-pink border-b-2 border-cyber-pink bg-cyber-pink/5">
+                INICIAR SESIÓN
+            </button>
+            <button id="tab-signup" onclick="switchAuthTab('signup')" class="flex-1 py-4 font-black tracking-widest text-slate-400 hover:text-white transition duration-300">
+                REGISTRARSE
+            </button>
+        </div>
+
+        <!-- Formulario Iniciar Sesión -->
+        <form id="form-login" method="POST" action="{% url 'store:login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" class="p-8 space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="login">
+            <div class="space-y-1">
+                <label class="block text-xs font-retro text-slate-400 tracking-wider">USUARIO</label>
+                <input type="text" name="username" required placeholder="Nombre de usuario" class="w-full bg-[#0a051b] border border-cyber-purple/40 rounded-lg p-3 text-white focus:outline-none focus:border-cyber-pink transition-colors">
+            </div>
+            <div class="space-y-1">
+                <label class="block text-xs font-retro text-slate-400 tracking-wider">CONTRASEÑA</label>
+                <input type="password" name="password" required placeholder="••••••••" class="w-full bg-[#0a051b] border border-cyber-purple/40 rounded-lg p-3 text-white focus:outline-none focus:border-cyber-pink transition-colors">
+            </div>
+            <button type="submit" class="w-full py-3.5 bg-cyber-pink hover:bg-cyber-pink/90 text-white font-retro font-bold tracking-widest rounded-lg transition duration-300">
+                ENTRAR AL VÓRTICE
+            </button>
+        </form>
+
+        <!-- Formulario Registración -->
+        <form id="form-signup" method="POST" action="{% url 'store:register' %}" class="hidden p-8 space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="signup">
+            <div class="space-y-1">
+                <label class="block text-xs font-retro text-slate-400 tracking-wider">NOMBRE DE USUARIO</label>
+                <input type="text" name="username" required placeholder="ThomasAnderson" class="w-full bg-[#0a051b] border border-cyber-purple/40 rounded-lg p-3 text-white focus:outline-none focus:border-cyber-cyan transition-colors">
+            </div>
+            <div class="space-y-1">
+                <label class="block text-xs font-retro text-slate-400 tracking-wider">CORREO ELECTRÓNICO</label>
+                <input type="email" name="email" required placeholder="neo@matrix.com" class="w-full bg-[#0a051b] border border-cyber-purple/40 rounded-lg p-3 text-white focus:outline-none focus:border-cyber-cyan transition-colors">
+            </div>
+            <div class="space-y-1">
+                <label class="block text-xs font-retro text-slate-400 tracking-wider">CONTRASEÑA</label>
+                <input type="password" name="password" required placeholder="Mínimo 8 caracteres" class="w-full bg-[#0a051b] border border-cyber-purple/40 rounded-lg p-3 text-white focus:outline-none focus:border-cyber-cyan transition-colors">
+            </div>
+            <button type="submit" class="w-full py-3.5 bg-cyber-cyan hover:bg-cyber-cyan/90 text-black font-retro font-black tracking-widest rounded-lg transition duration-300">
+                CREAR NUEVA CUENTA
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function switchAuthTab(tab) {
+        const tabLogin = document.getElementById('tab-login');
+        const tabSignup = document.getElementById('tab-signup');
+        const formLogin = document.getElementById('form-login');
+        const formSignup = document.getElementById('form-signup');
+
+        if (tab === 'login') {
+            tabLogin.className = "flex-1 py-4 font-black tracking-widest text-cyber-pink border-b-2 border-cyber-pink bg-cyber-pink/5";
+            tabSignup.className = "flex-1 py-4 font-black tracking-widest text-slate-400 hover:text-white transition duration-300";
+            formLogin.classList.remove('hidden');
+            formSignup.classList.add('hidden');
+        } else {
+            tabSignup.className = "flex-1 py-4 font-black tracking-widest text-cyber-cyan border-b-2 border-cyber-cyan bg-cyber-cyan/5";
+            tabLogin.className = "flex-1 py-4 font-black tracking-widest text-slate-400 hover:text-white transition duration-300";
+            formLogin.classList.add('hidden');
+            formSignup.classList.remove('hidden');
+        }
+    }
+</script>
+{% endblock %}

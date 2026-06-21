@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RetroPulse Vault{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#0a051b',
+                            card: '#140c2d',
+                            pink: '#ff007f',
+                            purple: '#8a2be2',
+                            cyan: '#00f0ff',
+                            yellow: '#f9d949',
+                            text: '#e2e8f0',
+                        }
+                    },
+                    fontFamily: {
+                        retro: ['Orbitron', 'sans-serif'],
+                        sans: ['Rajdhani', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+</head>
+<body class="flex flex-col min-h-screen grid-bg">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 bg-[#0a051bd9] backdrop-blur-md border-b border-cyber-purple/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="{% url 'store:home' %}" class="flex items-center">
+                    <span class="text-3xl font-black font-retro tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyber-pink via-cyber-purple to-cyber-cyan italic select-none">
+                        RETROPULSE
+                    </span>
+                    <span class="ml-2 px-1.5 py-0.5 text-[10px] bg-cyber-pink text-white font-bold rounded-sm uppercase tracking-wider animate-pulse">
+                        Vault
+                    </span>
+                </a>
+
+                <nav class="hidden md:flex space-x-8 text-lg font-semibold tracking-wider">
+                    <a href="{% url 'store:home' %}" class="text-cyber-text hover:text-cyber-pink transition duration-300 py-2 border-b-2 border-transparent">INICIO</a>
+                    <a href="{% url 'store:catalog' %}" class="text-cyber-text hover:text-cyber-cyan transition duration-300 py-2 border-b-2 border-transparent">CATÁLOGO</a>
+                    <a href="{% url 'store:about' %}" class="text-cyber-text hover:text-cyber-pink transition duration-300 py-2 border-b-2 border-transparent">NOSOTROS</a>
+                    
+                    <!-- Mostrar únicamente al Administrador -->
+                    {% if user.is_authenticated and user.is_staff %}
+                        <a href="{% url 'store:db_inspector' %}" class="text-cyber-yellow hover:text-yellow-400 transition duration-300 py-2 border-b-2 border-transparent text-sm font-retro flex items-center gap-1.5">
+                            <i class="fa-solid fa-database text-[11px]"></i> INSPECTOR DB
+                        </a>
+                    {% endif %}
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'store:cart_detail' %}" class="relative p-2 text-cyber-text hover:text-cyber-cyan transition duration-300 flex items-center justify-center">
+                        <!-- Ícono de Carrito SVG -->
+                        <svg class="w-7 h-7 text-cyber-text hover:text-cyber-cyan transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <!-- Badge de Notificación -->
+                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-cyber-pink text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-cyber-dark shadow-md">0</span>
+                    </a>
+
+                    {% if user.is_authenticated %}
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm font-semibold tracking-wider {% if user.is_staff %}text-cyber-yellow{% else %}text-cyber-cyan{% endif %}">
+                                {% if user.is_staff %}ADMIN: {% endif %}{{ user.username|upper }}
+                            </span>
+                            <a href="{% url 'store:logout' %}" class="border border-cyber-pink/50 hover:border-cyber-pink px-4 py-1.5 rounded-md text-sm font-semibold text-cyber-pink bg-cyber-pink/10 hover:bg-cyber-pink/20 transition-all duration-300">
+                                SALIR
+                            </a>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'store:login' %}" class="flex items-center gap-2 border border-cyber-pink/50 hover:border-cyber-pink px-4 py-1.5 rounded-md text-sm font-semibold text-cyber-pink bg-cyber-pink/10 hover:bg-cyber-pink/20 transition-all duration-300">
+                            <i class="fa-solid fa-user-astronaut"></i> ACCEDER
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Alertas y Mensajes de Django -->
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 mt-4">
+            {% for message in messages %}
+                <div class="p-4 rounded-lg border {% if message.tags == 'success' %}bg-cyber-cyan/10 border-cyber-cyan text-cyber-cyan{% else %}bg-cyber-pink/10 border-cyber-pink text-cyber-pink{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Contenedor global de Toasts -->
+    <div id="custom-toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-cyber-card border-2 border-cyber-cyan text-white px-6 py-3 rounded-lg shadow-[0_0_15px_rgba(0,240,255,0.4)] flex items-center gap-3">
+            <span id="toast-icon" class="text-cyber-cyan text-lg"><i class="fa-solid fa-circle-info"></i></span>
+            <span id="toast-message" class="font-semibold tracking-wide"></span>
+        </div>
+    </div>
+
+    <footer class="bg-black/80 border-t border-cyber-pink/20 py-12 mt-16 text-center text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 space-y-6">
+            <div class="text-2xl font-black font-retro tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyber-pink to-cyber-cyan italic">
+                RETROPULSE VAULT
+            </div>
+            <p class="max-w-md mx-auto text-sm">
+                Diseño estructural y desarrollo de interfaces con paradigma relacional de datos. Estética inspirada en la música electrónica de sintetizadores y los años 80s.
+            </p>
+            <div class="text-xs text-slate-600 font-mono pt-4 border-t border-slate-900">
+                © 2026 RETROPULSE VAULT. Proyecto académico.
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/cart.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,141 @@
+{% extends 'store/base.html' %}
+{% block title %}Inspector DB - RetroPulse Vault{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="text-center md:text-left">
+        <h1 class="text-3xl font-black font-retro tracking-widest text-cyber-yellow">
+            <i class="fa-solid fa-server"></i> INSPECTOR DE MODELO ORM (ACCESO EXCLUSIVO ADMIN)
+        </h1>
+        <p class="text-slate-400 mt-1">Inspección de la tabla <code class="text-cyber-yellow font-bold">app_producto</code> en PostgreSQL / SQLite.</p>
+    </div>
+
+    <!-- Tabla ORM -->
+    <div class="bg-cyber-card rounded-xl border border-cyber-yellow/40 overflow-hidden">
+        <div class="p-4 bg-cyber-yellow/10 border-b border-cyber-yellow/30 font-retro text-sm text-cyber-yellow flex justify-between items-center">
+            <span>Mapeo del Registro: "Productos"</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300 font-mono">
+                <thead class="bg-black/40 text-xs text-cyber-cyan font-retro uppercase border-b border-cyber-purple/40">
+                    <tr>
+                        <th class="p-4">cod_producto (PK)</th>
+                        <th class="p-4">tipo (Int)</th>
+                        <th class="p-4">nombre (Varchar)</th>
+                        <th class="p-4">descripción (Text)</th>
+                        <th class="p-4 text-center">cantidad (Int)</th>
+                        <th class="p-4">precio (Decimal)</th>
+                        <th class="p-4 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in productos %}
+                        <tr class="border-b border-cyber-purple/20 hover:bg-cyber-purple/10 transition">
+                            <td class="p-4 text-cyber-cyan font-bold">{{ p.cod_producto }}</td>
+                            <td class="p-4">{% if p.tipo == 1 %}1 (Coleccionables){% else %}2 (Tecnología){% endif %}</td>
+                            <td class="p-4 text-white font-sans font-semibold">{{ p.nombre }}</td>
+                            <td class="p-4 max-w-xs truncate">{{ p.descripcion }}</td>
+                            <td class="p-4 text-center font-bold">{{ p.cantidad_productos }}</td>
+                            <td class="p-4 font-bold text-cyber-pink">${{ p.precio_unitario }}</td>
+                             <td class="p-4 text-center">
+                                <div class="flex items-center justify-center gap-2 font-sans">
+                                    <!-- Botón Gatillo Inicial -->
+                                    <button type="button" 
+                                            id="btn-trigger-{{ p.cod_producto }}" 
+                                            onclick="toggleDeleteConfirmation({{ p.cod_producto }}, true)" 
+                                            class="px-2.5 py-1 bg-cyber-pink/20 hover:bg-cyber-pink text-cyber-pink hover:text-white rounded border border-cyber-pink/40 hover:border-cyber-pink text-xs font-bold tracking-wider uppercase transition duration-300">
+                                        Borrar
+                                    </button>
+                                    
+                                    <!-- Contenedor de Confirmación Oculto por Defecto -->
+                                    <div id="confirm-box-{{ p.cod_producto }}" class="hidden flex items-center gap-1.5 animate-pulse">
+                                        <form method="POST" action="{% url 'store:eliminar_producto' p.cod_producto %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold uppercase tracking-wider transition">
+                                                Confirmar
+                                            </button>
+                                        </form>
+                                        <button type="button" 
+                                                onclick="toggleDeleteConfirmation({{ p.cod_producto }}, false)" 
+                                                class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded text-xs font-bold transition">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="p-4 text-center text-slate-500 font-retro">Sin productos registrados en la base de datos.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Formulario con carga de archivos binarios -->
+    <div class="bg-cyber-card rounded-xl border border-cyber-purple/40 p-6 space-y-4">
+        <h2 class="text-xl font-bold font-retro text-white flex items-center gap-2">
+            <i class="fa-solid fa-circle-plus text-cyber-cyan"></i> Insertar Registro Directo en la Base de Datos
+        </h2>
+        <form method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-300">
+            {% csrf_token %}
+            <div class="space-y-1">
+                <label class="text-xs font-retro">TIPO DE REGISTRO</label>
+                <select name="tipo" class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
+                    <option value="1">1 = Coleccionables</option>
+                    <option value="2">2 = Tecnología Retro</option>
+                </select>
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-retro">NOMBRE DEL PRODUCTO</label>
+                <input name="nombre" type="text" required placeholder="Ej: Sega Saturn" class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-retro">CANTIDAD / STOCK</label>
+                <input name="cantidad_productos" type="number" required min="0" placeholder="Ej: 5" class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-retro">PRECIO UNITARIO ($)</label>
+                <input name="precio_unitario" type="number" step="0.01" required min="0" placeholder="Ej: 199.99" class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
+            </div>
+            <div class="space-y-1 md:col-span-2">
+                <label class="text-xs font-retro">DESCRIPCIÓN</label>
+                <input name="descripcion" type="text" required placeholder="Breve descripción técnica..." class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
+            </div>
+            <div class="space-y-1 md:col-span-3">
+                <label class="text-xs font-retro block">SUBIR IMAGEN DEL PRODUCTO (.JPG / .PNG)</label>
+                <input name="imagen" type="file" accept="image/*" class="w-full bg-cyber-dark border border-cyber-purple/50 rounded p-2 text-white">
+            </div>
+            <div class="md:col-span-3 flex justify-end">
+                <button type="submit" class="px-6 py-2 bg-cyber-cyan hover:bg-cyber-cyan/90 text-black font-retro font-black rounded tracking-widest transition">
+                    INSERTAR AL ORM
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    /**
+     * Alterna la visibilidad entre el botón de borrar y la caja de confirmación segura.
+     */
+    function toggleDeleteConfirmation(productId, showConfirm) {
+        const triggerBtn = document.getElementById(`btn-trigger-${productId}`);
+        const confirmBox = document.getElementById(`confirm-box-${productId}`);
+        
+        if (showConfirm) {
+            triggerBtn.classList.add('hidden');
+            confirmBox.classList.remove('hidden');
+            confirmBox.classList.add('flex');
+        } else {
+            confirmBox.classList.add('hidden');
+            confirmBox.classList.remove('flex');
+            triggerBtn.classList.remove('hidden');
+        }
+    }
+</script>
+{% endblock %}

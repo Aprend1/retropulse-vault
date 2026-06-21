@@ -1,0 +1,60 @@
+{% extends 'store/base.html' %}
+{% block title %}Catálogo - RetroPulse Vault{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="text-center md:text-left space-y-2">
+        <h1 class="text-3xl md:text-4xl font-black font-retro tracking-wider text-white">CATÁLOGO DE LA VAULT</h1>
+        <p class="text-slate-400">Encuentra y filtra piezas únicas restauradas de nuestra base de datos.</p>
+    </div>
+
+    <div class="bg-cyber-card p-4 rounded-xl border border-cyber-purple/30 flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex flex-wrap gap-2">
+            <a href="{% url 'store:catalog' %}" class="px-4 py-2 rounded-lg font-bold font-retro text-sm transition-all duration-300 {% if not tipo_actual %}bg-cyber-pink text-white{% else %}bg-[#1e1545] text-slate-400 border border-cyber-purple/30 hover:bg-cyber-purple/20{% endif %}">
+                TODOS LOS PRODUCTOS
+            </a>
+            <a href="{% url 'store:catalog' %}?tipo=1" class="px-4 py-2 rounded-lg font-bold font-retro text-sm transition-all duration-300 {% if tipo_actual == '1' %}bg-cyber-pink text-white{% else %}bg-[#1e1545] text-cyber-pink border border-cyber-pink/30 hover:bg-cyber-pink/20{% endif %}">
+                COLECCIONABLES
+            </a>
+            <a href="{% url 'store:catalog' %}?tipo=2" class="px-4 py-2 rounded-lg font-bold font-retro text-sm transition-all duration-300 {% if tipo_actual == '2' %}bg-cyber-pink text-white{% else %}bg-[#1e1545] text-cyber-cyan border border-cyber-cyan/30 hover:bg-cyber-cyan/20{% endif %}">
+                TECNOLOGÍA RETRO
+            </a>
+        </div>
+        <div class="text-sm font-semibold tracking-wide text-slate-400">
+            Mostrando <span class="text-cyber-cyan font-bold">{{ productos.count }}</span> productos cargados
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for producto in productos %}
+            <div class="bg-cyber-card rounded-xl overflow-hidden border border-cyber-purple/30 hover:border-cyber-pink transition-all duration-300 flex flex-col group h-full">
+                <div class="relative overflow-hidden aspect-video bg-black flex items-center justify-center">
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="object-cover w-full h-full group-hover:scale-105 transition duration-500 opacity-90">
+                    {% endif %}
+                    <span class="absolute top-2 left-2 px-2 py-0.5 text-[10px] font-retro font-semibold rounded {% if producto.tipo == 1 %}border-cyber-pink text-cyber-pink{% else %}border-cyber-cyan text-cyber-cyan{% endif %} bg-cyber-dark/80 border uppercase tracking-wider">
+                        {% if producto.tipo == 1 %}Coleccionable{% else %}Tecnología Retro{% endif %}
+                    </span>
+                </div>
+                <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-bold text-white group-hover:text-cyber-cyan transition-colors line-clamp-1">{{ producto.nombre }}</h3>
+                        <p class="text-sm text-slate-400 line-clamp-2">{{ producto.descripcion }}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-cyber-purple/20">
+                        <div>
+                            <span class="text-xs text-slate-400 block uppercase font-retro tracking-wider">PRECIO</span>
+                            <span class="text-xl font-black font-retro text-cyber-cyan">${{ producto.precio_unitario }}</span>
+                        </div>
+                        <a href="{% url 'store:product_detail' producto.cod_producto %}" class="px-4 py-2 bg-cyber-pink/20 hover:bg-cyber-pink border border-cyber-pink/40 hover:border-cyber-pink text-cyber-pink hover:text-white text-xs font-retro font-bold rounded tracking-widest transition duration-300">
+                            DETALLES
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-slate-500 text-center col-span-full py-12">No se encontraron productos de este tipo.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

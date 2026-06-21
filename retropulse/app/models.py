@@ -48,12 +48,10 @@ class Producto(models.Model):
         verbose_name="Precio Unitario"
     )
 
-    imagen = models.ImageField(
-        upload_to='productos/',
-        blank=True,
-        null=True,
-        default='productos/default.jpg',
-        verbose_name="Imagen del Producto"
+    imagen = models.CharField(
+        max_length=255, 
+        default='/media/productos/default.png',
+        help_text="Ejemplo: /media/productos/leon.png"
     )
 
     class Meta:
